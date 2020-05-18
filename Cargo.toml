@@ -7,6 +7,14 @@ edition = "2018"
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
 [dependencies]
-serenity = "0.8.6"
+tokio = { version = "0.2.21", features = ["macros"] }
 reqwest = "0.10.4"
-warp = "0.2.2"
+warp = "0.2"
+tar = "0.4.26"
+futures = "0.3"
+
+[dependencies.serenity]
+git = "https://github.com/Lakelezz/serenity.git"
+branch = "await"
+default-features = false
+features = ["client", "cache", "http", "model", "utils", "gateway", "builder", "native_tls_backend"]
