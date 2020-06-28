@@ -32,7 +32,8 @@ rust-nightly:
 deploy_staging:
   stage: deploy
   script:
-    - echo "Deploy to staging server"
+    - kubectl version
+    - envsubst < kube-deployment.yml | kubectl apply -f -
   environment:
     name: Staging
     kubernetes:
@@ -43,7 +44,8 @@ deploy_staging:
 deploy_prod:
   stage: deploy
   script:
-    - echo "Deploy to production server"
+    - kubectl version
+    - envsubst < kube-deployment.yml | kubectl apply -f -
   environment:
     name: Production
     kubernetes:

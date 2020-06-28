@@ -1,0 +1,28 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: mrparrot
+  labels:
+    app: mrparrot
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: mrparrot
+  minReadySeconds: 5
+  strategy:
+    type: Recreate
+  template:
+    metadata:
+      labels:
+        app: mrparrot
+    spec:
+      containers:
+        - name: mrparrot
+          image: registry.gitlab.com/pretzelca/partydiscord-rust:latest
+          imagePullPolicy: Always
+          env:
+            - name: DISCORD_TOKEN
+              - value: $DISCORD_TOKEN
+            - name: SHARDS
+              - value: $SHARDS
