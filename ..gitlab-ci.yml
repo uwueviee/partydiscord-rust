@@ -1,0 +1,53 @@
+stages:
+  - test
+  - build
+  - deploy
+
+include:
+  - template: SAST.gitlab-ci.yml
+
+rust-latest:
+  stage: build
+  image: rust:latest
+  before_script:
+    - cargo install --force cargo-audit
+    - cargo generate-lockfile
+  script:
+    - cargo build --verbose
+    - cargo test --verbose
+    - cargo audit
+
+rust-nightly:
+  stage: build
+  image: rustlang/rust:nightly
+  before_script:
+    - cargo install --force cargo-audit
+    - cargo generate-lockfile
+  script:
+    - cargo build --verbose
+    - cargo test --verbose
+    - cargo audit
+  allow_failure: true
+
+deploy_staging:
+  stage: deploy
+  script:
+    - echo "Deploy to staging server"
+  environment:
+    name: Staging
+    kubernetes:
+      namespace: Staging
+  only:
+    - master
+
+deploy_prod:
+  stage: deploy
+  script:
+    - echo "Deploy to production server"
+  environment:
+    name: Production
+    kubernetes:
+      namespace: Production
+  when: manual
+  only:
+    - master
