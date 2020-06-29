@@ -31,6 +31,7 @@ rust-nightly:
 
 deploy_staging:
   stage: deploy
+  image: dtzar/helm-kubectl
   script:
     - kubectl version
     - envsubst < kube-deployment.yml | kubectl apply -f -
@@ -43,6 +44,7 @@ deploy_staging:
 
 deploy_prod:
   stage: deploy
+  image: dtzar/helm-kubectl
   script:
     - kubectl version
     - envsubst < kube-deployment.yml | kubectl apply -f -
