@@ -24,8 +24,7 @@ impl EventHandler for Handler {
         This is based off of the official Discord API documentation so it *should* be fine
         FYI 0x40000000 is MANAGE_EMOJIS on Discord's API (That's why I'm looking for it)
         */
-        if (msg.member(&ctx.cache).await.unwrap().permissions(&ctx.cache).await
-            .expect("permissions").bits & 0x40000000) == 0x40000000 {
+        if msg.guild(&ctx.cache).await.unwrap().member_permissions(msg.author.id).await.bits & 0x40000000 == 0x40000000 {
 
             // Upload default emoji pack
             if msg.content == "+start" {
@@ -45,8 +44,6 @@ impl EventHandler for Handler {
                     println!("Error sending message: {:?}", why);
                 }
 
-                let mut upload_errors = 0;
-
                 for emoji in emoji_list {
                     if Path::new(&format!("parrots/hd/{}.gif", emoji)).exists() {
                         if let Err(why) = msg.guild_id.unwrap().create_emoji(&ctx.http, emoji, &serenity::utils::read_image(format!("parrots/hd/{}.gif", emoji)).unwrap()).await {
@@ -57,15 +54,12 @@ impl EventHandler for Handler {
                             println!("Error uploading emoji: {:?}", why);
                         };
                     } else {
-                        upload_errors += 1;
                         println!("Parrot \"{}\" does not exist.", emoji);
                         if let Err(why) = msg.channel_id.say(&ctx.http, format!("Parrot \"{}\" does not exist.", emoji)).await {
                             println!("Error sending message: {:?}", why);
                         }
                     }
                 }
-
-                println!("{} errors detected", upload_errors);
 
                 if let Err(why) = msg.channel_id.say(&ctx.http, "<a:ultrafastparrot:405266489218826241> Finished! <a:ultrafastparrot:405266489218826241>").await {
                     println!("Error sending message: {:?}", why);
